@@ -27,3 +27,6 @@ ipv6day -- Get The Results Yourself
   Any simple program should be subject to feature creep...
 
   + Maybe make it perform a service availability test too.
+  + deal with CNAMEs for MX and NS records
+  + make the calls asynchronous so it doesn't take a year to run on a
+    long list.
