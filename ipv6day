@@ -122,6 +122,8 @@ foreach my $domain (sort keys(%domaininfo)) {
 	} else {
 	    print "  <td>NO</td>\n";
 	}
+
+	print "  </tr>\n";
     }
 }
 print "</tdata></table>\n";
