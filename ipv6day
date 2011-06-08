@@ -6,18 +6,41 @@ use Net::DNS;
 my $resolver = Net::DNS::Resolver->new;
 my $answer;
 
-print "<table>\n  <tr><th>Domain</th><th>WWW</th></tr>\n";
+print "<table>\n  <tr><th>Domain</th><th>DNS</th><th>WWW</th><th>MX</th></tr>\n";
 
 foreach my $domain (@ARGV) {
 
     print "  <tr>\n    <td>$domain</td>\n";
 
+    check_for_NS($domain);
     check_for_AAAA("www." . $domain, 1);
     check_for_MX($domain);
     print "  </tr>\n";
 }
 
 print "</table>\n";
+
+sub check_for_NS {
+    my ($name) = @_;
+    my $count = 0;
+
+    # Find the list of MX records for a name
+    my $query = $resolver->search($name, "NS");
+
+    if ($query) {
+	foreach my $record ($query->answer) {
+	    # for each NS record, find at least one that has an IPv6 address
+	    $count += check_for_AAAA($record->nsdname);
+	}
+    }
+    if ($count > 0) {
+	Succeed($count);
+	return $count;
+    }
+    # if we got here for any reason, we've failed
+    Fail();
+    return 0;
+}
 
 sub check_for_MX {
     my ($name) = @_;
