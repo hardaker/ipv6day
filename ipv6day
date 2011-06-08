@@ -10,7 +10,7 @@ print "<table>\n  <tr><th>Domain</th><th>DNS</th><th>WWW</th><th>MX</th></tr>\n"
 
 foreach my $domain (@ARGV) {
 
-    print "  <tr>\n    <td>$domain</td>\n";
+    print "  <tr>\n    <td><a href=\"http://www.$domain/\">$domain</a></td>\n";
 
     check_for_NS($domain);
     check_for_AAAA("www." . $domain, 1);
