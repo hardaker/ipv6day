@@ -11,6 +11,8 @@ print "<thead><tr><th>Domain</th><th>DNS</th><th>WWW</th><th>MX</th></tr></thead
 print "<tdata>\n";
 
 foreach my $domain (@ARGV) {
+    # strip any www. prefix
+    $domain =~ s/^www\.//;
 
     print "  <tr>\n    <td><a href=\"http://www.$domain/\">$domain</a></td>\n";
 
