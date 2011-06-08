@@ -5,7 +5,7 @@ use Net::DNS;
 use Getopt::Std;
 
 my %opts;
-$| = 1; # immediate flush
+my %domaininfo;
 
 if (!getopt('vh', \%opts)) {
     usage();
@@ -18,6 +18,7 @@ if ($opts{'h'} || $#ARGV == -1) {
 }
 
 my $resolver = Net::DNS::Resolver->new;
+$| = 1; # immediate flush
 
 print "<table>\n";
 my $headerstyle="style=\"border: 1px solid black; border-width: 0px 0px 2px 0px;\"";
@@ -33,15 +34,34 @@ foreach my $domain (@ARGV) {
 
     print "  <tr>\n    <td><a href=\"http://www.$domain/\">$domain</a></td>\n";
 
-    check_for_NS($domain);
-    check_for_AAAA("www." . $domain, 1);
-    check_for_MX($domain);
-    check_for_generic($domain, 'DNSKEY');
-    check_for_generic($domain, 'DS');
+    # IPv6 tests
+    $domaininfo{$domain}{'total'} +=
+	(check_for_NS($domain) ? 1 : 0);
+    $domaininfo{$domain}{'total'} +=
+	(check_for_AAAA("www." . $domain, 1) ? 1 : 0);
+    $domaininfo{$domain}{'total'} +=
+	(check_for_MX($domain) ? 1 : 0);
+
+    # count the IPv6 results
+    $domaininfo{$domain}{'ipv6'} = $domaininfo{$domain}{'total'};
+
+    # DNSSEC tests
+    $domaininfo{$domain}{'total'} +=
+	(check_for_generic($domain, 'DNSKEY') ? 1 : 0);
+    $domaininfo{$domain}{'total'} += 
+	(check_for_generic($domain, 'DS') ? 1 : 0);
+
+    # count the DNSSEC results
+    $domaininfo{$domain}{'dnssec'} = 
+	$domaininfo{$domain}{'total'} - $domaininfo{'ipv6'};
+
     print "  </tr>\n";
 }
 
 print "</tdata></table>\n";
+
+use Data::Dumper;
+print Dumper(\%domaininfo);
 
 sub check_for_NS {
     my ($name) = @_;
