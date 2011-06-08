@@ -2,6 +2,14 @@
 
 use strict;
 use Net::DNS;
+use Getopt::Std;
+
+my %opts;
+
+if (! getopt('t', \%opts) || $opts{'h'}) {
+    usage();
+    exit 1;
+}
 
 my $resolver = Net::DNS::Resolver->new;
 
@@ -12,6 +20,8 @@ print "<tdata>\n";
 foreach my $domain (@ARGV) {
     # strip any www. prefix
     $domain =~ s/^www\.//;
+
+    Verbose("Checking $domain\n");
 
     print "  <tr>\n    <td><a href=\"http://www.$domain/\">$domain</a></td>\n";
 
@@ -26,6 +36,8 @@ print "</tdata></table>\n";
 sub check_for_NS {
     my ($name) = @_;
     my $count = 0;
+
+    Verbose(" checking NS records\n");
 
     # Find the list of MX records for a name
     my $query = $resolver->search($name, "NS");
@@ -49,6 +61,7 @@ sub check_for_MX {
     my ($name) = @_;
     my $count = 0;
 
+    Verbose(" checking MX records\n");
     # Find the list of MX records for a name
     my $query = $resolver->search($name, "MX");
 
@@ -77,7 +90,7 @@ sub check_for_AAAA {
     if ($query) {
 	foreach my $record ($query->answer) {
 	    next unless $record->type eq "AAAA";
-	    Verbose("found an AAAA record for $name");
+	    Verbose("  found an AAAA record for $name");
 	    $count++;
 	}
 	if ($count > 0) {
@@ -87,7 +100,7 @@ sub check_for_AAAA {
 	    return $count;
 	}
     } else {
-	Verbose("Query failed: ", $resolver->errorstring, "\n");
+	Verbose("  Query failed: ", $resolver->errorstring, "\n");
     }
     if ($printresults) {
 	Fail();
@@ -112,5 +125,14 @@ sub Warn {
 }
 
 sub Verbose {
-    # print STDERR @_;
+    if ($opts{'v'}) {
+	print STDERR @_;
+    }
+}
+
+sub usage {
+    print "ipv6day [-v] [-t]\n\n";
+    print "Options:\n";
+    print "\t-v\tVerbose Mode\n";
+    print "\t-h\tHelp\n";
 }
