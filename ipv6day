@@ -14,7 +14,7 @@ if (! getopt('t', \%opts) || $opts{'h'}) {
 my $resolver = Net::DNS::Resolver->new;
 
 print "<table>\n";
-print "<thead><tr><th>Domain</th><th>DNS</th><th>WWW</th><th>MX</th></tr></thead>\n";
+print "<thead><tr><th>Domain</th><th>DNS</th><th>WWW</th><th>MX</th><th>DNSKEY</th><th>DS</th></tr></thead>\n";
 print "<tdata>\n";
 
 foreach my $domain (@ARGV) {
@@ -28,6 +28,8 @@ foreach my $domain (@ARGV) {
     check_for_NS($domain);
     check_for_AAAA("www." . $domain, 1);
     check_for_MX($domain);
+    check_for_generic($domain, 'DNSKEY');
+    check_for_generic($domain, 'DS');
     print "  </tr>\n";
 }
 
@@ -105,6 +107,29 @@ sub check_for_AAAA {
     if ($printresults) {
 	Fail();
     }
+    return 0;
+}
+
+sub check_for_generic {
+    my ($name, $type) = @_;
+    my $count = 0;
+
+    Verbose(" checking $type records\n");
+
+    # Find the list of MX records for a name
+    my $query = $resolver->search($name, $type);
+
+    if ($query) {
+	foreach my $record ($query->answer) {
+	    $count++;
+	}
+    }
+    if ($count > 0) {
+	Succeed($count);
+	return $count;
+    }
+    # if we got here for any reason, we've failed
+    Fail();
     return 0;
 }
 
