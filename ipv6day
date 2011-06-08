@@ -6,7 +6,9 @@ use Net::DNS;
 my $resolver = Net::DNS::Resolver->new;
 my $answer;
 
-print "<table>\n  <tr><th>Domain</th><th>DNS</th><th>WWW</th><th>MX</th></tr>\n";
+print "<table>\n";
+print "<thead><tr><th>Domain</th><th>DNS</th><th>WWW</th><th>MX</th></tr></thead>\n";
+print "<tdata>\n";
 
 foreach my $domain (@ARGV) {
 
@@ -18,7 +20,7 @@ foreach my $domain (@ARGV) {
     print "  </tr>\n";
 }
 
-print "</table>\n";
+print "</tdata></table>\n";
 
 sub check_for_NS {
     my ($name) = @_;
