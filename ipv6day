@@ -88,7 +88,7 @@ sub check_for_AAAA {
 	    return $count;
 	}
     } else {
-	Warn("Query failed: ", $resolver->errorstring, "\n");
+	Verbose("Query failed: ", $resolver->errorstring, "\n");
     }
     if ($printresults) {
 	Fail();
