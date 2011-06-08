@@ -13,11 +13,32 @@ foreach my $domain (@ARGV) {
     print "  <tr>\n    <td>$domain</td>\n";
 
     check_for_AAAA("www." . $domain, 1);
-
+    check_for_MX($domain);
     print "  </tr>\n";
 }
 
 print "</table>\n";
+
+sub check_for_MX {
+    my ($name) = @_;
+
+    # Find the list of MX records for a name
+    my $query = $resolver->search($name, "MX");
+
+    if ($query) {
+	foreach my $record ($query->answer) {
+	    # for each MX record, find at least one that has an IPv6 address
+	    my $address = check_for_AAAA($record->exchange);
+	    if ($address ne '') {
+		Succeed($address);
+		return $address;
+	    }
+	}
+    }
+    # if we got here for any reason, we've failed
+    Fail();
+
+}
 
 sub check_for_AAAA {
     my ($name, $printresults) = @_;
