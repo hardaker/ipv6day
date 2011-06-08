@@ -21,6 +21,7 @@ print "</table>\n";
 
 sub check_for_MX {
     my ($name) = @_;
+    my $count = 0;
 
     # Find the list of MX records for a name
     my $query = $resolver->search($name, "MX");
@@ -28,20 +29,21 @@ sub check_for_MX {
     if ($query) {
 	foreach my $record ($query->answer) {
 	    # for each MX record, find at least one that has an IPv6 address
-	    my $address = check_for_AAAA($record->exchange);
-	    if ($address ne '') {
-		Succeed($address);
-		return $address;
-	    }
+	    $count += check_for_AAAA($record->exchange);
 	}
+    }
+    if ($count > 0) {
+	Succeed($count);
+	return $count;
     }
     # if we got here for any reason, we've failed
     Fail();
-
+    return 0;
 }
 
 sub check_for_AAAA {
     my ($name, $printresults) = @_;
+    my $count = 0;
     
     # test for an AAAA record for whatever was passed in
     my $query = $resolver->search($name, "AAAA");
@@ -50,17 +52,21 @@ sub check_for_AAAA {
 	foreach my $record ($query->answer) {
 	    next unless $record->type eq "AAAA";
 	    Verbose("found an AAAA record for $name: $answer");
+	    $count++;
+	}
+	if ($count > 0) {
 	    if ($printresults) {
-		Succeed("" . $record->address);
+		Succeed($count);
 	    }
-	    return "" . $record->address; # an ipv6 address was found!
+	    return $count;
 	}
     } else {
 	Warn("Query failed: ", $resolver->errorstring, "\n");
-	if ($printresults) {
-	    Fail();
-	}
     }
+    if ($printresults) {
+	Fail();
+    }
+    return 0;
 }
 
 sub Succeed {
@@ -72,7 +78,7 @@ sub Succeed {
 sub Fail {
     my ($record) = @_;
 
-    print "    <td bgcolor=\"red\">FAIL</td>\n";
+    print "    <td bgcolor=\"red\">0</td>\n";
 }
 
 sub Warn {
