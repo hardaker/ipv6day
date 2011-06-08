@@ -4,19 +4,60 @@ use strict;
 use Net::DNS;
 
 my $resolver = Net::DNS::Resolver->new;
+my $answer;
+
+print "<table>\n  <tr><th>Domain</th><th>WWW</th></tr>\n";
 
 foreach my $domain (@ARGV) {
-    # test for an AAAA record for their www entry
-    my $query = $resolver->search("www." . $domain, "AAAA");
+
+    print "  <tr>\n    <td>$domain</td>\n";
+
+    check_for_AAAA("www." . $domain, 1);
+
+    print "  </tr>\n";
+}
+
+print "</table>\n";
+
+sub check_for_AAAA {
+    my ($name, $printresults) = @_;
+    
+    # test for an AAAA record for whatever was passed in
+    my $query = $resolver->search($name, "AAAA");
     
     if ($query) {
 	foreach my $record ($query->answer) {
 	    next unless $record->type eq "AAAA";
-	    print $record->address,"\n";
+	    Verbose("found an AAAA record for $name: $answer");
+	    if ($printresults) {
+		Succeed("" . $record->address);
+	    }
+	    return "" . $record->address; # an ipv6 address was found!
 	}
     } else {
-	print "Query failed: ", $resolver->errorstring, "\n";
+	Warn("Query failed: ", $resolver->errorstring, "\n");
+	if ($printresults) {
+	    Fail();
+	}
     }
 }
 
-sub {
+sub Succeed {
+    my ($addr) = @_;
+
+    print "    <td bgcolor=\"green\">$addr</td>\n";
+}
+
+sub Fail {
+    my ($record) = @_;
+
+    print "    <td bgcolor=\"red\">FAIL</td>\n";
+}
+
+sub Warn {
+    print STDERR @_;
+}
+
+sub Verbose {
+    # print STDERR @_;
+}
