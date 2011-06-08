@@ -72,7 +72,7 @@ www.canarie.ca
 gustavus.edu
 www.laurentian.ca
 www.huawei.com
-http://www.interop.jp
+www.interop.jp
 www.mapy.cz
 www.shazzlemail.com
 www.bangzoom.com
@@ -81,7 +81,7 @@ www.plasa.com
 www.telkomspeedy.com
 www.httrack.com
 www.luns.net.uk
-http://www.a10networks.com/
+www.a10networks.com
 www.radiusgateway.com
 dyni.net
 www.mihostcgi.com
@@ -444,7 +444,7 @@ www.vc3.com
 www.promptlink.com
 www.skymarket.co.uk
 netregistry.com.au
-www.ru/
+www.ru
 bit.ly
 www.nist.gov
 www.mobily.com.sa
