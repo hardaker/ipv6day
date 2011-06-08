@@ -449,7 +449,6 @@ bit.ly
 www.nist.gov
 www.mobily.com.sa
 www.parc.com
-www.parc.com
 www.soitron.com
 www.soitron.sk
 www.europa.eu
@@ -458,8 +457,6 @@ www.telus.com
 www.nec.com
 mozilla.jp
 www.media.hiroshima-u.ac.jp
-www.media.hiroshima-u.ac.jp
-www.fxmfg.co.jp
 www.fxmfg.co.jp
 www.tamagawa.jp
 www.tamagawa.ac.jp
