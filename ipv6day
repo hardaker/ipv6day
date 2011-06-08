@@ -95,7 +95,7 @@ sub check_for_AAAA {
 sub Succeed {
     my ($addr) = @_;
 
-    print "    <td bgcolor=\"green\">$addr</td>\n";
+    print "    <td bgcolor=\"40ff40\">$addr</td>\n";
 }
 
 sub Fail {
