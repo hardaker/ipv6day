@@ -5,6 +5,7 @@ use Net::DNS;
 use Getopt::Std;
 
 my %opts;
+$| = 1; # immediate flush
 
 if (!getopt('vh', \%opts)) {
     usage();
