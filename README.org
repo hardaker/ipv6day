@@ -10,6 +10,17 @@ ipv6day -- Get The Results Yourself
   still a fairly popular transport thees days, the script also checks
   for a valid IPv6 MX record.
 
+  The other big changes coming to the net involve DNS Security
+  (DNSSEC).  Since these domains are updating for IPv6, they certainly
+  should be doing DNSSEC at the same time.  So I'm querying for two
+  different types of critical DNSSEC data as well: whether the domain
+  is hosting a DNSKEY and whether the domain's parent has a DS record
+  pointing to the domain's key.
+
+  Many more tests could be done for both IPv6 and for DNSSEC, but the
+  script at this time has only striven to produce a simple set of
+  tests.
+
 * Usage
 
   # ./ipv6day [SITES] > results.html
