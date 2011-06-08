@@ -16,9 +16,10 @@ ipv6day -- Get The Results Yourself
   # favorite-browser rseults.html
 
   A list of sites that indicated they would participate in the 2011
-  World IPv6 Day can be found in "sites.txt" so that this is possible:
+  World IPv6 Day can be found in "2011-sites.txt" so that this is
+  possible:
 
-  # ./ipv6day `cat sites.txt` > results.html
+  # ./ipv6day `cat 2011-sites.txt` > results.html
 
 
 * Future work
