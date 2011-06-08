@@ -6,7 +6,12 @@ use Getopt::Std;
 
 my %opts;
 
-if (! getopt('t', \%opts) || $opts{'h'}) {
+if (getopt('vh', \%opts)) {
+    usage();
+    exit 1;
+}
+
+if ($opts{'h'} || $#ARGV == -1) {
     usage();
     exit 1;
 }
@@ -156,7 +161,7 @@ sub Verbose {
 }
 
 sub usage {
-    print "ipv6day [-v] [-t]\n\n";
+    print "ipv6day [-v] [-t] DOMAINS\n\n";
     print "Options:\n";
     print "\t-v\tVerbose Mode\n";
     print "\t-h\tHelp\n";
