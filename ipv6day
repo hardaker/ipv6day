@@ -6,6 +6,7 @@ use Getopt::Std;
 
 my %opts;
 my %domaininfo;
+my %countinfo;
 
 if (!getopt('vh', \%opts)) {
     usage();
@@ -44,6 +45,7 @@ foreach my $domain (@ARGV) {
 
     # count the IPv6 results
     $domaininfo{$domain}{'ipv6'} = $domaininfo{$domain}{'total'};
+    $countinfo{'ipv6'}{$domaininfo{$domain}{'total'}}++;
 
     # DNSSEC tests
     $domaininfo{$domain}{'total'} +=
@@ -53,16 +55,41 @@ foreach my $domain (@ARGV) {
 
     # count the DNSSEC results
     $domaininfo{$domain}{'dnssec'} = 
-	$domaininfo{$domain}{'total'} - $domaininfo{'ipv6'};
+	$domaininfo{$domain}{'total'} - $domaininfo{$domain}{'ipv6'};
+
+    $countinfo{'dnssec'}{$domaininfo{$domain}{'dnssec'}}++;
 
     print "  </tr>\n";
 }
 
 print "</tdata></table>\n";
 
-use Data::Dumper;
-print Dumper(\%domaininfo);
+print "<hr />\n";
 
+#
+# Print the gold star summary results
+#
+print "<table>\n <thead>\n";
+print "  <tr><th>&nbsp;</th><th colspan=\"4\">Good Results Counts</th></tr>\n";
+print "  <tr><th>&nbsp;</th><th>0</th><th>1</th><th>2</th><th>3</th></tr></thead>\n";
+print "<tdata>\n";
+
+print " <tr>\n  <th>IPv6</th>\n";
+foreach my $count (qw(0 1 2 3)) {
+    print "  <td>$countinfo{ipv6}{$count}</td>\n";
+}
+
+print " <tr>\n  <th>DNSSEC</th>\n";
+foreach my $count (qw(0 1 2)) {
+    print "  <td>$countinfo{dnssec}{$count}</td>\n";
+}
+print "</tdata></table>\n";
+
+use Data::Dumper;
+print STDERR Dumper(\%countinfo);
+#######################################################################
+# Test Functions
+#
 sub check_for_NS {
     my ($name) = @_;
     my $count = 0;
