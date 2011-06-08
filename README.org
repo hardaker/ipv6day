@@ -1,0 +1,28 @@
+ipv6day -- Get The Results Yourself
+
+* Objective
+
+  The ipv6day script is a very simple perl program that tests sites for
+  DNS entries for IPv6 data.  Most importantly, it doesn't just check
+  for an AAAA record for the web server.  That's not enough to be
+  considered truly IPv6 enabled.  At a minimum, the DNS servers for a
+  given domain must be accessible over IPv6 as well.  Since EMail is
+  still a fairly popular transport thees days, the script also checks
+  for a valid IPv6 MX record.
+
+* Usage
+
+  # ./ipv6day [SITES] > results.html
+  # favorite-browser rseults.html
+
+  A list of sites that indicated they would participate in the 2011
+  World IPv6 Day can be found in "sites.txt" so that this is possible:
+
+  # ./ipv6day `cat sites.txt` > results.html
+
+
+* Future work
+
+  Any simple program should be subject to feature creep...
+
+  + Maybe make it perform a service availability test too.
