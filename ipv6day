@@ -1,0 +1,22 @@
+#!/bin/perl
+
+use strict;
+use Net::DNS;
+
+my $resolver = Net::DNS::Resolver->new;
+
+foreach my $domain (@ARGV) {
+    # test for an AAAA record for their www entry
+    my $query = $resolver->search("www." . $domain, "AAAA");
+    
+    if ($query) {
+	foreach my $record ($query->answer) {
+	    next unless $record->type eq "AAAA";
+	    print $record->address,"\n";
+	}
+    } else {
+	print "Query failed: ", $resolver->errorstring, "\n";
+    }
+}
+
+sub {
